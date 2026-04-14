@@ -53,9 +53,8 @@ gtest_discover_tests(test_arithmetic)
 # gtest_discover_tests(test_mul)
 
 # ============================================================================
-# Validation Tests (against Fortran reference)
+# Validation Tests (against high-precision reference)
 # ============================================================================
 
-# add_executable(test_validation validation/test_against_reference.cpp)
-# target_link_libraries(test_validation PRIVATE mpfun::mpfun GTest::gtest_main)
-# gtest_discover_tests(test_validation)
+# Add validation subdirectory with Python-generated test data
+add_subdirectory(validation)
