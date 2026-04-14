@@ -174,17 +174,25 @@ void normalize(int64_t* d, int64_t* a, int mpnw) {
     d[IDX_EXPONENT] = 0;
     
     // Release carries - may need to repeat if negatives appear
+    // Fortran loop: do i = n4, 3, -1; d(i+1) = ...; so it processes d(4) to d(n4+1)
+    // In C++ we process d[4] to d[n4], then add carry to d[3]
     bool repeat;
     do {
         repeat = false;
         int64_t t1 = 0;
         
-        for (int i = n4; i >= IDX_EXPONENT; --i) {
+        // Process mantissa words from end to beginning
+        // Fortran: do i = n4, 3, -1 with d(i+1) means processing indices 4 to n4+1
+        // But we only have mantissa from 4 to na+3 (which is n4-1)
+        // Actually the Fortran processes d(4) to d(n4+1) where n4=na+4
+        // So the mantissa range is d(4)..d(na+4) in Fortran
+        for (int i = n4; i >= IDX_MANTISSA_START; --i) {
             int64_t t3 = t1 + d[i];
             t1 = arith_shift_right(t3, BITS_PER_WORD);
             d[i] = t3 - shift_left(t1, BITS_PER_WORD);
         }
         
+        // Add final carry to the exponent overflow slot
         d[IDX_EXPONENT] = d[IDX_EXPONENT] + t1;
         
         if (d[IDX_EXPONENT] < 0) {
@@ -193,7 +201,8 @@ void normalize(int64_t* d, int64_t* a, int mpnw) {
             d[IDX_MANTISSA_START] = d[IDX_MANTISSA_START] + RADIX * d[IDX_EXPONENT];
             d[IDX_EXPONENT] = 0;
             
-            for (int i = IDX_SIGN_LENGTH; i <= n4; ++i) {
+            // Negate all mantissa words (and sign_length for proper iteration)
+            for (int i = IDX_MANTISSA_START; i <= n4; ++i) {
                 d[i] = -d[i];
             }
             repeat = true;
