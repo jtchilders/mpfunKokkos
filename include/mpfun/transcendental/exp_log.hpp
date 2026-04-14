@@ -10,6 +10,7 @@
 #include "../mp_float.hpp"
 #include "../core/div.hpp"
 #include <cmath>
+#include <algorithm>
 
 namespace mpfun {
 namespace detail {

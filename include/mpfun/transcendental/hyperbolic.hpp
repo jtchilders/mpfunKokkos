@@ -16,6 +16,7 @@
 #include "../core/mul.hpp"
 #include "../core/div.hpp"
 #include "../core/sqrt.hpp"
+#include "exp_log.hpp"  // Use the working exp() function
 
 // Forward declaration of MPFloat to avoid circular includes
 namespace mpfun {
@@ -299,9 +300,11 @@ void exp_impl(const int64_t* a, int64_t* b, int mpnw) {
     }
     
     // Final adjustment: multiply by 2^nz
-    // This is done by adjusting the exponent
+    // Use mpdmc to create 2^nz properly and then multiply
     if (nz != 0) {
-        s0[IDX_EXPONENT] = s0[IDX_EXPONENT] + nz;
+        mpdmc<WORDS>(1.0, nz, s2, mpnw1);  // s2 = 2^nz
+        mul<WORDS>(s0, s2, s1, mpnw1);      // s1 = exp(t) * 2^nz
+        mpeq<WORDS>(s1, s0, mpnw1);
     }
     
     round<WORDS>(s0, mpnw);
