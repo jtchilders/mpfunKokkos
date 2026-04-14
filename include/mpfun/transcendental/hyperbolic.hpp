@@ -42,6 +42,11 @@ MPFloat<W> cosh(const MPFloat<W>& x);
 
 namespace detail {
 
+// Forward declaration of exp_impl (defined below sinhcosh_impl)
+template <int WORDS>
+KOKKOS_INLINE_FUNCTION
+void exp_impl(const int64_t* a, int64_t* b, int mpnw);
+
 /**
  * @brief Compute hyperbolic sine and cosine together (internal implementation)
  * 

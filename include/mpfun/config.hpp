@@ -10,14 +10,31 @@
 #ifndef MPFUN_CONFIG_HPP
 #define MPFUN_CONFIG_HPP
 
-// Include Kokkos if available, otherwise use fallback macros
+// Include Kokkos if available, otherwise use fallback macros and math wrappers
 #if __has_include(<Kokkos_Core.hpp>)
 #include <Kokkos_Core.hpp>
+#define MPFUN_HAS_KOKKOS 1
 #else
-// Fallback when Kokkos is not available
+#define MPFUN_HAS_KOKKOS 0
+// Fallback KOKKOS_INLINE_FUNCTION when Kokkos is not available
 #ifndef KOKKOS_INLINE_FUNCTION
 #define KOKKOS_INLINE_FUNCTION inline
 #endif
+#endif
+
+// Provide Kokkos math function wrappers when not using Kokkos
+// These are used by transcendental functions
+#if !MPFUN_HAS_KOKKOS
+#include <cmath>
+namespace Kokkos {
+    inline double fabs(double x) { return std::fabs(x); }
+    inline double log(double x) { return std::log(x); }
+    inline double pow(double x, double y) { return std::pow(x, y); }
+    inline double sqrt(double x) { return std::sqrt(x); }
+    inline double atan2(double y, double x) { return std::atan2(y, x); }
+    inline double sin(double x) { return std::sin(x); }
+    inline double cos(double x) { return std::cos(x); }
+}
 #endif
 
 namespace mpfun {

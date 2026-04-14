@@ -69,7 +69,9 @@ public:
     }
     
     /// Total size of the data array
-    static constexpr int data_size() { return WORDS + detail::METADATA_WORDS; }
+    /// MPFUN operations require mpnw+6 or mpnw+7 elements, so we allocate
+    /// METADATA_WORDS + WORDS + 3 = WORDS + 7 to provide adequate padding.
+    static constexpr int data_size() { return WORDS + detail::METADATA_WORDS + 3; }
     
     //=========================================================================
     // Constructors
@@ -380,8 +382,9 @@ public:
     friend KOKKOS_INLINE_FUNCTION int compare(const MPFloat<W>& a, const MPFloat<W>& b);
     
 private:
-    /// The data array: metadata + mantissa
-    word_type data_[WORDS + detail::METADATA_WORDS];
+    /// The data array: metadata + mantissa + guard words
+    /// MPFUN operations require mpnw+6 or mpnw+7 elements, so we need extra space
+    word_type data_[WORDS + detail::METADATA_WORDS + 3];
     
     //=========================================================================
     // Internal helper methods

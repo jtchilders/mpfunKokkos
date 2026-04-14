@@ -17,25 +17,9 @@
 #ifndef MPFUN_CORE_REPRESENTATION_HPP
 #define MPFUN_CORE_REPRESENTATION_HPP
 
+#include "../config.hpp"  // KOKKOS_INLINE_FUNCTION and Kokkos math wrappers
 #include <cstdint>
 #include <cmath>
-
-// KOKKOS_INLINE_FUNCTION is defined by Kokkos; for standalone testing
-// define it if not already present
-#ifndef KOKKOS_INLINE_FUNCTION
-#define KOKKOS_INLINE_FUNCTION inline
-#endif
-
-// Provide fallbacks for Kokkos math functions when not using Kokkos
-#ifndef KOKKOS_CORE_HPP
-namespace Kokkos {
-    inline double fabs(double x) { return std::fabs(x); }
-    inline double log(double x) { return std::log(x); }
-    inline double pow(double x, double y) { return std::pow(x, y); }
-    inline double sqrt(double x) { return std::sqrt(x); }
-    inline double atan2(double y, double x) { return std::atan2(y, x); }
-}
-#endif
 
 namespace mpfun {
 namespace detail {
