@@ -1,0 +1,3 @@
+# Stub directory for I/O utilities (host-only)
+# - string.hpp
+# - stream.hpp

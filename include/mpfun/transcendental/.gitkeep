@@ -1,0 +1,7 @@
+# Stub directory for transcendental function implementations
+# Agent 2 will create:
+# - exp.hpp
+# - log.hpp
+# - trig.hpp
+# - inverse_trig.hpp
+# - hyperbolic.hpp

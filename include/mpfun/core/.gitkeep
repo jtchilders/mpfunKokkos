@@ -1,0 +1,9 @@
+# Stub directory for core arithmetic implementations
+# Agent 1 will create:
+# - representation.hpp
+# - add.hpp
+# - sub.hpp
+# - mul.hpp
+# - div.hpp
+# - sqrt.hpp
+# - compare.hpp

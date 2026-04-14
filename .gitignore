@@ -1,0 +1,4 @@
+debug_test
+test_standalone
+build/
+*.o

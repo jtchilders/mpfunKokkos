@@ -1,0 +1,5 @@
+# Stub directory for mathematical constants
+# Will contain precomputed high-precision values:
+# - pi.hpp
+# - e.hpp
+# - precomputed.hpp
