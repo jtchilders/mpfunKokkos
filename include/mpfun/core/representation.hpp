@@ -32,6 +32,8 @@ namespace Kokkos {
     inline double fabs(double x) { return std::fabs(x); }
     inline double log(double x) { return std::log(x); }
     inline double pow(double x, double y) { return std::pow(x, y); }
+    inline double sqrt(double x) { return std::sqrt(x); }
+    inline double atan2(double y, double x) { return std::atan2(y, x); }
 }
 #endif
 

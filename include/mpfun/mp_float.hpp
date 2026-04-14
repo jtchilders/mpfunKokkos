@@ -22,15 +22,8 @@
 #include <cstdint>
 #include <cmath>
 
-// Mock Kokkos functions when not available
-#ifndef KOKKOS_CORE_HPP
-namespace Kokkos {
-    inline double fabs(double x) { return std::fabs(x); }
-    inline double log(double x) { return std::log(x); }
-    inline double pow(double a, double b) { return std::pow(a, b); }
-    inline double sqrt(double x) { return std::sqrt(x); }
-}
-#endif
+// Kokkos mock functions are defined in core/representation.hpp
+// No additional mock functions needed here
 
 namespace mpfun {
 
