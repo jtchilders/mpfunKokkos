@@ -11,6 +11,10 @@
 #include <cmath>
 #include <cstring>
 
+// Global test counters
+static int g_tests_passed = 0;
+static int g_tests_failed = 0;
+
 // Include MPFloat headers
 #include "mpfun/core/representation.hpp"
 #include "mpfun/core/add.hpp"
@@ -105,8 +109,10 @@ void test_division(double num, double denom, const char* label) {
     
     if (rel_error < 1e-14) {
         printf("  STATUS: PASS\n");
+        g_tests_passed++;
     } else {
         printf("  STATUS: FAIL ***\n");
+        g_tests_failed++;
     }
 }
 
@@ -136,7 +142,13 @@ void test_multiplication(double a_val, double b_val, const char* label) {
     printf("  Expected:  %.15g\n", expected);
     printf("  Got:       %.15g\n", result);
     printf("  Rel Error: %.2e\n", rel_error);
-    printf("  STATUS: %s\n", (rel_error < 1e-14) ? "PASS" : "FAIL ***");
+    if (rel_error < 1e-14) {
+        printf("  STATUS: PASS\n");
+        g_tests_passed++;
+    } else {
+        printf("  STATUS: FAIL ***\n");
+        g_tests_failed++;
+    }
 }
 
 void debug_multiply(double a_val, double b_val) {
@@ -313,5 +325,10 @@ int main() {
     printf("\n\n=== DEBUG: 100000 * 1e-5 ===\n");
     debug_multiply(100000.0, 1e-5);
     
-    return 0;
+    // Summary
+    printf("\n=== Test Summary ===\n");
+    printf("Passed: %d\n", g_tests_passed);
+    printf("Failed: %d\n", g_tests_failed);
+    
+    return g_tests_failed > 0 ? 1 : 0;
 }

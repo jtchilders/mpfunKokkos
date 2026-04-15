@@ -18,6 +18,10 @@
 #include <cstring>
 #include <string>
 
+// Global test counters
+static int g_tests_passed = 0;
+static int g_tests_failed = 0;
+
 // Include MPFloat headers
 #include "mpfun/mp_float.hpp"
 #include "mpfun/transcendental/constants.hpp"
@@ -112,9 +116,9 @@ void test_pi() {
     printf("  Correct digits: ~%d (limited by double precision)\n", correct);
     
     if (std::fabs(pi_d - M_PI) < 1e-14) {
-        printf("  STATUS: PASS\n");
+        printf("  STATUS: PASS\n"); g_tests_passed++;
     } else {
-        printf("  STATUS: FAIL\n");
+        g_tests_failed++; printf("  STATUS: FAIL\n");
     }
     
     // Derived constants
@@ -133,9 +137,9 @@ void test_pi() {
     double err_twopi = std::fabs(twopi.to_double() - 2 * M_PI);
     
     if (err_pi2 < 1e-14 && err_pi4 < 1e-14 && err_twopi < 1e-14) {
-        printf("  STATUS: PASS\n");
+        printf("  STATUS: PASS\n"); g_tests_passed++;
     } else {
-        printf("  STATUS: FAIL (errors: %.2e, %.2e, %.2e)\n", err_pi2, err_pi4, err_twopi);
+        g_tests_failed++; printf("  STATUS: FAIL (errors: %.2e, %.2e, %.2e)\n", err_pi2, err_pi4, err_twopi);
     }
 }
 
@@ -153,9 +157,9 @@ void test_e() {
     printf("  Correct digits: ~%d (limited by double precision)\n", correct);
     
     if (std::fabs(e_d - M_E) < 1e-14) {
-        printf("  STATUS: PASS\n");
+        printf("  STATUS: PASS\n"); g_tests_passed++;
     } else {
-        printf("  STATUS: FAIL\n");
+        g_tests_failed++; printf("  STATUS: FAIL\n");
     }
 }
 
@@ -174,9 +178,9 @@ void test_ln2() {
     printf("  Correct digits: ~%d (limited by double precision)\n", correct);
     
     if (std::fabs(ln2_d - ref) < 1e-14) {
-        printf("  STATUS: PASS\n");
+        printf("  STATUS: PASS\n"); g_tests_passed++;
     } else {
-        printf("  STATUS: FAIL\n");
+        g_tests_failed++; printf("  STATUS: FAIL\n");
     }
     
     // Derived constants
@@ -190,9 +194,9 @@ void test_ln2() {
     printf("  Error:    %.2e\n", std::fabs(log2e_d - log2e_ref));
     
     if (std::fabs(log2e_d - log2e_ref) < 1e-13) {
-        printf("  STATUS: PASS\n");
+        printf("  STATUS: PASS\n"); g_tests_passed++;
     } else {
-        printf("  STATUS: FAIL\n");
+        g_tests_failed++; printf("  STATUS: FAIL\n");
     }
 }
 
@@ -213,9 +217,9 @@ void test_euler_gamma() {
     // Euler-Mascheroni is harder to compute precisely
     // Accept larger error for now
     if (std::fabs(gamma_d - ref) < 1e-10) {
-        printf("  STATUS: PASS\n");
+        printf("  STATUS: PASS\n"); g_tests_passed++;
     } else {
-        printf("  STATUS: FAIL\n");
+        g_tests_failed++; printf("  STATUS: FAIL\n");
     }
 }
 
@@ -245,9 +249,9 @@ void test_sqrt_constants() {
     printf("  Errors: %.2e, %.2e, %.2e\n", err2, err3, err_inv);
     
     if (err2 < 1e-14 && err3 < 1e-14 && err_inv < 1e-14) {
-        printf("  STATUS: PASS\n");
+        printf("  STATUS: PASS\n"); g_tests_passed++;
     } else {
-        printf("  STATUS: FAIL\n");
+        g_tests_failed++; printf("  STATUS: FAIL\n");
     }
 }
 
@@ -277,9 +281,9 @@ void test_precision_scaling() {
     printf("  Errors: %.2e, %.2e, %.2e\n", err3, err6, err12);
     
     if (err3 < 1e-14 && err6 < 1e-14 && err12 < 1e-14) {
-        printf("  STATUS: PASS\n");
+        printf("  STATUS: PASS\n"); g_tests_passed++;
     } else {
-        printf("  STATUS: FAIL\n");
+        g_tests_failed++; printf("  STATUS: FAIL\n");
     }
 }
 
@@ -317,9 +321,9 @@ void test_identities() {
     printf("  Errors: %.2e, %.2e, %.2e\n", err1, err2, err3);
     
     if (err1 < 1e-14 && err2 < 1e-14 && err3 < 1e-14) {
-        printf("  STATUS: PASS\n");
+        printf("  STATUS: PASS\n"); g_tests_passed++;
     } else {
-        printf("  STATUS: FAIL\n");
+        g_tests_failed++; printf("  STATUS: FAIL\n");
     }
 }
 
@@ -339,9 +343,10 @@ int main() {
     test_identities();
     
     printf("\n=== Test Summary ===\n");
-    printf("Check STATUS lines above for pass/fail.\n");
+    printf("Passed: %d\n", g_tests_passed);
+    printf("Failed: %d\n", g_tests_failed);
     printf("Note: Euler-Mascheroni uses a simplified algorithm.\n");
     printf("      For production, use Brent-McMillan with proper ln(n).\n");
     
-    return 0;
+    return g_tests_failed > 0 ? 1 : 0;
 }
