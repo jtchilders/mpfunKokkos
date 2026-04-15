@@ -25,7 +25,7 @@ target_include_directories(run_validation PRIVATE
 )
 
 # C++17 for structured bindings and constexpr lambdas
-target_compile_features(run_validation PRIVATE cxx_std_20)
+target_compile_features(run_validation PRIVATE cxx_std_17)
 
 # Optimization for validation runner
 if(CMAKE_BUILD_TYPE STREQUAL "Release")

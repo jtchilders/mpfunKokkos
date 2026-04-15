@@ -19,15 +19,6 @@
 
 #include "test_data_reader.hpp"
 
-// Include mpfun - define KOKKOS_CORE_HPP guard to prevent duplicate math function definitions
-// This is a workaround for duplicate Kokkos fallback definitions in the headers
-#define KOKKOS_CORE_HPP
-namespace Kokkos {
-    inline double fabs(double x) { return std::fabs(x); }
-    inline double log(double x) { return std::log(x); }
-    inline double pow(double a, double b) { return std::pow(a, b); }
-    inline double sqrt(double x) { return std::sqrt(x); }
-}
 #include "mpfun/mpfun.hpp"
 
 using namespace mpfun;
@@ -250,6 +241,17 @@ bool run_test(const TestCase& tc, const Config& cfg, int case_num) {
     return pass;
 }
 
+// C++17-compatible helper: runs all test cases for a given MPFloat word size
+template <int WORDS>
+void run_all_cases(const std::vector<TestCase>& cases, const Config& cfg,
+                   int& passed, int& failed) {
+    for (size_t i = 0; i < cases.size(); ++i) {
+        bool result = run_test<WORDS>(cases[i], cfg, static_cast<int>(i + 1));
+        if (result) passed++;
+        else failed++;
+    }
+}
+
 int main(int argc, char* argv[]) {
     Config cfg = parse_args(argc, argv);
     
@@ -289,35 +291,21 @@ int main(int argc, char* argv[]) {
     int failed = 0;
     int skipped = 0;
     
-    // Dispatch to appropriate MPFloat size
-    // For flexibility, we support common sizes
-    auto run_all = [&]<int WORDS>() {
-        for (size_t i = 0; i < cases.size(); ++i) {
-            bool result = run_test<WORDS>(cases[i], cfg, static_cast<int>(i + 1));
-            if (result) {
-                passed++;
-            } else {
-                failed++;
-            }
-        }
-    };
-    
-    // Select MPFloat size based on file's words_per_number
-    // The file's mantissa_words should match WORDS
+    // Select MPFloat size based on file's words_per_number and run all cases
     if (mantissa_words <= 6) {
         std::cout << "Using MPFloat<6> (~100 digits)\n\n";
-        run_all.template operator()<6>();
+        run_all_cases<6>(cases, cfg, passed, failed);
     } else if (mantissa_words <= 12) {
         std::cout << "Using MPFloat<12> (~200 digits)\n\n";
-        run_all.template operator()<12>();
+        run_all_cases<12>(cases, cfg, passed, failed);
     } else if (mantissa_words <= 28) {
         std::cout << "Using MPFloat<28> (~500 digits)\n\n";
-        run_all.template operator()<28>();
+        run_all_cases<28>(cases, cfg, passed, failed);
     } else if (mantissa_words <= 56) {
         std::cout << "Using MPFloat<56> (~1000 digits)\n\n";
-        run_all.template operator()<56>();
+        run_all_cases<56>(cases, cfg, passed, failed);
     } else {
-        std::cerr << "Error: Test data requires " << mantissa_words 
+        std::cerr << "Error: Test data requires " << mantissa_words
                   << " words, but max supported is 56\n";
         return 1;
     }
