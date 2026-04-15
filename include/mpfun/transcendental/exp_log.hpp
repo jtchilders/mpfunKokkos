@@ -9,58 +9,11 @@
 
 #include "../mp_float.hpp"
 #include "../core/div.hpp"
+#include "constants.hpp"  // For ln2<W>() and compute_ln2
 #include <cmath>
 #include <algorithm>
 
 namespace mpfun {
-namespace detail {
-
-// =============================================================================
-// Internal Helper: Precomputed ln(2) constant
-// =============================================================================
-
-/// ln(2) = 0.693147180559945309417232121458176568...
-/// Computed to sufficient precision for argument reduction
-/// This is a simplified version - for production, use AGM-based computation
-template <int WORDS>
-KOKKOS_INLINE_FUNCTION
-void compute_ln2(int64_t* ln2, int mpnw) {
-    // Use double precision as starting point
-    // ln(2) ≈ 0.6931471805599453
-    constexpr double LN2_D = 0.6931471805599453094172321214581765680755;
-    
-    ln2[IDX_ALLOCATED] = mpnw + 6;
-    ln2[IDX_PRECISION] = mpnw;
-    
-    // For higher precision, we need to compute ln(2) properly
-    // Using the identity: ln(2) = 2 * atanh(1/3) + atanh(1/7) / 2
-    // Or use AGM: ln(2) = π / (2 * AGM(1, 4/2^(n/2)))
-    // For now, use double precision (good for ~15 digits)
-    mpdmc<WORDS>(LN2_D, 0, ln2, mpnw);
-    
-    // For higher precision implementations, extend using Newton-Raphson
-    // on exp(y) = 2, which gives y_{k+1} = y_k + 2*exp(-y_k) - 1
-    // This requires exp() to work first, creating a chicken-egg problem
-    // Resolution: bootstrap with double, then refine iteratively
-}
-
-} // namespace detail
-
-// =============================================================================
-// ln2<W>() - Natural logarithm of 2 constant
-// =============================================================================
-
-/// Natural logarithm of 2 (ln(2) = 0.69314718055994530942...)
-/// @tparam W Number of mantissa words (determines precision)
-/// @return ln(2) to approximately W * 18 decimal digits
-/// @note For full precision, requires iterative refinement
-template <int W>
-KOKKOS_INLINE_FUNCTION 
-MPFloat<W> ln2() {
-    MPFloat<W> result;
-    detail::compute_ln2<W>(result.data(), W);
-    return result;
-}
 
 // =============================================================================
 // exp(x) - Exponential function

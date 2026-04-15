@@ -183,19 +183,41 @@ bool run_test(const TestCase& tc, const Config& cfg, int case_num) {
                 actual_data = from_mpfloat(result);
                 break;
             }
-            // Transcendental functions - check if available
-            case Operation::Exp:
-            case Operation::Log:
-            case Operation::Sin:
-            case Operation::Cos:
-            case Operation::Tan:
+            case Operation::Exp: {
+                auto a = to_mpfloat<WORDS>(tc.inputs[0]);
+                auto result = exp(a);
+                actual_data = from_mpfloat(result);
+                break;
+            }
+            case Operation::Log: {
+                auto a = to_mpfloat<WORDS>(tc.inputs[0]);
+                auto result = log(a);
+                actual_data = from_mpfloat(result);
+                break;
+            }
+            case Operation::Sin: {
+                auto a = to_mpfloat<WORDS>(tc.inputs[0]);
+                auto result = sin(a);
+                actual_data = from_mpfloat(result);
+                break;
+            }
+            case Operation::Cos: {
+                auto a = to_mpfloat<WORDS>(tc.inputs[0]);
+                auto result = cos(a);
+                actual_data = from_mpfloat(result);
+                break;
+            }
+            case Operation::Tan: {
+                auto a = to_mpfloat<WORDS>(tc.inputs[0]);
+                auto result = tan(a);
+                actual_data = from_mpfloat(result);
+                break;
+            }
             case Operation::Atan: {
-                // These may not be implemented yet
-                if (cfg.verbose) {
-                    std::cout << "  [SKIP] " << operation_name(tc.operation) 
-                              << " not implemented\n";
-                }
-                return true;  // Skip, don't count as failure
+                auto a = to_mpfloat<WORDS>(tc.inputs[0]);
+                auto result = atan(a);
+                actual_data = from_mpfloat(result);
+                break;
             }
             default:
                 std::cerr << "Unknown operation: " << static_cast<int>(tc.operation) << "\n";

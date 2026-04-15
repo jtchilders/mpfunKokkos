@@ -37,11 +37,13 @@
 // - core/sqrt.hpp
 // - core/compare.hpp
 
+// Transcendental functions
+#include "transcendental/constants.hpp"
+#include "transcendental/exp_log.hpp"
+#include "transcendental/trig.hpp"
+#include "transcendental/hyperbolic.hpp"
+
 // TODO: Add when implemented
 // #include "mp_complex.hpp"
-// #include "transcendental/exp.hpp"
-// #include "transcendental/log.hpp"
-// #include "transcendental/trig.hpp"
-// #include "constants/pi.hpp"
 
 #endif // MPFUN_MPFUN_HPP
